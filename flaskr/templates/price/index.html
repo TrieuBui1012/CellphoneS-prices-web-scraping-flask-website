@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    CellphoneS Price Scraping
+{% endblock %}
+
+{% block nav %}
+    <form method="post" id="add-device">
+        <input id="add-device-input" name="add-device-input" type="text" placeholder="Enter the device to track price...">
+        <input id="add-device-button" name="add-device-button" type="submit" value="Add">
+    </form>
+{% endblock %}
+
+{% block section %}
+    <div class="float-left">
+        <h1>Devices:</h1>
+        <ul>
+            {% for device in devices %}
+                <li>
+                    <a class="check-price" href="{{ url_for('price.index', id=device['id']) }}">{{ device['device_name'] }}</a>
+                    <form action="{{ url_for('price.delete', id=device['id']) }}" method="post">
+                        <input class="delete" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <form class="float-right" method="post" action="{{ url_for('price.scrap_price') }}">
+        <h1>Choose devices to scrap price:</h1>
+        <ul>
+            {% for device in devices %}
+                <li>
+                    <input type="checkbox" id="{{ device['id'] }}" name="devices-scraping" value="{{ device['device_name'] }}">
+                    <label for="{{ device['id'] }}">{{ device['device_name'] }}</label>
+                </li>
+            {% endfor %}
+        </ul>
+        <input type="submit" value="Scrap Prices">
+    </form>
+    <h1 style="clear: both;">Price over time: (Choose a device above)</h1>
+    {% if device %}
+        <div class="device-img-container">
+            <img src="{{ url_for('static', filename=device['device_img']) }}">
+        </div>
+        <table class="price-data">
+            <caption class="device-name">{{ device['device_name'] }}</caption>
+            <tr>
+                <th>ID</th>
+                <th>Scraped Time</th>
+                <th>Price (VND)</th>
+            </tr>
+            {% for price in prices %}
+                <tr>
+                    <td>{{ price['id'] }}</td>
+                    <td>{{ price['created'] }}</td>
+                    <td class="money">{{ price['price'] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    <script>
+        let x = document.querySelectorAll(".money");
+        for (let i = 0, len = x.length; i < len; i++) {
+            let num = Number(x[i].innerHTML)
+                .toLocaleString('vn');
+            x[i].innerHTML = num;
+            x[i].classList.add("currSign");
+        }
+    </script>
+{% endblock %}

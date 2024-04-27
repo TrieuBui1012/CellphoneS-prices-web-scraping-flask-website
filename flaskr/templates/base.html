@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"
+</head>
+<nav>
+    <img src="{{ url_for('static', filename='CellphoneSLogo.png') }}" alt="CellphoneS Logo" width="200px">
+    <h1>CellphoneS devices' price scraping</h1>
+    {% block nav %}{% endblock %}
+</nav>
+<section>
+    {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+    {% block section %}{% endblock %}
+</section>
+<footer>Developed by TrieuBui1012 (Bùi Quốc Triệu)</footer>
+</html>
